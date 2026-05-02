@@ -1,0 +1,29 @@
+# Java Compiled Class files
+*.class
+
+# Executable distributions
+*.jar
+*.war
+*.ear
+
+# Project Output Directories
+# This covers the "out" folder you saw in your screenshot
+out/
+bin/
+build/
+target/
+
+# IDE Specific Files (IntelliJ, VS Code, Eclipse)
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+
+# OS Specific Files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
