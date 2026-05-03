@@ -1,5 +1,4 @@
 package com.controller;
-
 import com.model.SecurityConfig;
 
 import java.io.*;
@@ -118,5 +117,12 @@ public void recordFailedAttempt() {
 // ── checks if user is currently locked out ────────────────────────────────
 public boolean isLockedOut() {
     return loadSecurity().isLockedOut();
+}
+
+
+public void togglePrivacyLock(boolean enabled) {
+    SecurityConfig sc = loadSecurity();
+    sc.setLockState(enabled);  
+    saveSecurity(sc);
 }
 }
