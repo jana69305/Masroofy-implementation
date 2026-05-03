@@ -119,4 +119,10 @@ public void recordFailedAttempt() {
 public boolean isLockedOut() {
     return loadSecurity().isLockedOut();
 }
+
+public void togglePrivacyLock(boolean enabled) {
+    SecurityConfig sc = loadSecurity();
+    sc.setLockState(enabled); 
+    saveSecurity(sc);
+}
 }
