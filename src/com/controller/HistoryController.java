@@ -11,31 +11,31 @@ import java.util.stream.Collectors;
 
 public class HistoryController {
 
-    private static final String TRANSACTIONS_FILE = "data/transactions.txt";
-    private static final String CYCLE_FILE = "data/cycle.txt";
+    // no stored attributes — matches class diagram
 
-    private LimitEngine limitEngine;
+    private static final String TRANSACTIONS_FILE = "data/transactions.txt";
+    private static final String CYCLE_FILE        = "data/cycle.txt";
+
+    private LimitEngine   limitEngine;
     private AlertNotifier alertNotifier;
 
     public HistoryController(LimitEngine limitEngine, AlertNotifier alertNotifier) {
-        this.limitEngine = limitEngine;
+        this.limitEngine   = limitEngine;
         this.alertNotifier = alertNotifier;
     }
+
+    // ── private file helpers ─────────────────────────────────────────────
 
     private List<Transaction> readTransactions() {
         List<Transaction> list = new ArrayList<>();
         File f = new File(TRANSACTIONS_FILE);
-
         if (!f.exists()) return list;
-
         try (BufferedReader br = new BufferedReader(new FileReader(f))) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.isBlank()) continue;
-
                 String[] p = line.split(",", 6);
                 if (p.length < 6) continue;
-
                 try {
                     Transaction t = new Transaction();
                     t.setTransactionId(Integer.parseInt(p[0]));
@@ -55,17 +55,14 @@ public class HistoryController {
 
     private void writeTransactions(List<Transaction> list) {
         new File("data").mkdirs();
-
         try (PrintWriter pw = new PrintWriter(new FileWriter(TRANSACTIONS_FILE))) {
             for (Transaction t : list) {
-                pw.println(
-                        t.getTransactionId() + "," +
-                        t.getAmount() + "," +
-                        t.getCategoryId() + "," +
-                        t.getTimestamp() + "," +
-                        t.getNote() + "," +
-                        t.getCycleId()
-                );
+                pw.println(t.getTransactionId() + "," +
+                           t.getAmount()        + "," +
+                           t.getCategoryId()    + "," +
+                           t.getTimestamp()     + "," +
+                           t.getNote()          + "," +
+                           t.getCycleId());
             }
         } catch (IOException e) {
             System.out.println("Error saving transactions.");
@@ -75,14 +72,11 @@ public class HistoryController {
     private BudgetCycle readCycle() {
         File f = new File(CYCLE_FILE);
         if (!f.exists()) return null;
-
         try (BufferedReader br = new BufferedReader(new FileReader(f))) {
             String line = br.readLine();
             if (line == null || line.isBlank()) return null;
-
             String[] p = line.split(",");
             if (p.length < 6) return null;
-
             BudgetCycle c = new BudgetCycle();
             c.setCycleId(Integer.parseInt(p[0]));
             c.setTotalAllowance(Double.parseDouble(p[1]));
@@ -90,27 +84,21 @@ public class HistoryController {
             c.setEndDate(LocalDate.parse(p[3]));
             c.setRemainingBalance(Double.parseDouble(p[4]));
             c.setSafeDailyLimit(Double.parseDouble(p[5]));
-
             return c;
-
         } catch (IOException e) {
-            System.out.println("Error reading cycle.");
             return null;
         }
     }
 
     private void writeCycle(BudgetCycle cycle) {
         new File("data").mkdirs();
-
         try (PrintWriter pw = new PrintWriter(new FileWriter(CYCLE_FILE))) {
-            pw.println(
-                    cycle.getCycleId() + "," +
-                    cycle.getTotalAllowance() + "," +
-                    cycle.getStartDate() + "," +
-                    cycle.getEndDate() + "," +
-                    cycle.getRemainingBalance() + "," +
-                    cycle.getSafeDailyLimit()
-            );
+            pw.println(cycle.getCycleId()          + "," +
+                       cycle.getTotalAllowance()   + "," +
+                       cycle.getStartDate()        + "," +
+                       cycle.getEndDate()          + "," +
+                       cycle.getRemainingBalance() + "," +
+                       cycle.getSafeDailyLimit());
         } catch (IOException e) {
             System.out.println("Error saving cycle.");
         }
@@ -119,9 +107,8 @@ public class HistoryController {
     private int getNextId() {
         List<Transaction> all = readTransactions();
         return all.stream()
-                .mapToInt(Transaction::getTransactionId)
-                .max()
-                .orElse(0) + 1;
+                  .mapToInt(Transaction::getTransactionId)
+                  .max().orElse(0) + 1;
     }
 
     private void recalculateBalance(BudgetCycle cycle, List<Transaction> all) {
@@ -129,9 +116,10 @@ public class HistoryController {
                 .filter(t -> t.getCycleId() == cycle.getCycleId())
                 .mapToDouble(Transaction::getAmount)
                 .sum();
-
         cycle.setRemainingBalance(cycle.getTotalAllowance() - totalSpent);
     }
+
+   //Methods
 
     public List<Transaction> getAll(int cycleId) {
         return readTransactions().stream()
@@ -140,16 +128,35 @@ public class HistoryController {
                 .collect(Collectors.toList());
     }
 
-    public void logExpense(double amount, int catId, String note, int cycleId) {
-        Transaction t = new Transaction();
-        t.setTransactionId(getNextId());
-        t.setCycleId(cycleId);
-        t.logExpense(amount, catId, note);
+    public List<Transaction> filterByCategory(int catId) {
+        BudgetCycle cycle = readCycle();
+        if (cycle == null) return new ArrayList<>();
+        return readTransactions().stream()
+                .filter(t -> t.getCycleId() == cycle.getCycleId()
+                          && t.getCategoryId() == catId)
+                .sorted((a, b) -> b.getTimestamp().compareTo(a.getTimestamp()))
+                .collect(Collectors.toList());
+    }
 
+    public List<Transaction> filterByDate(LocalDate date) {
+        BudgetCycle cycle = readCycle();
+        if (cycle == null) return new ArrayList<>();
+        return readTransactions().stream()
+                .filter(t -> t.getCycleId() == cycle.getCycleId()
+                          && t.getTimestamp().toLocalDate().equals(date))
+                .sorted((a, b) -> b.getTimestamp().compareTo(a.getTimestamp()))
+                .collect(Collectors.toList());
+    }
+
+    public void editTransaction(int id, double amount, int catId) {
         List<Transaction> all = readTransactions();
-        all.add(t);
+        for (Transaction t : all) {
+            if (t.getTransactionId() == id) {
+                t.editEntry(amount, catId);
+                break;
+            }
+        }
         writeTransactions(all);
-
         BudgetCycle cycle = readCycle();
         if (cycle != null) {
             recalculateBalance(cycle, all);
@@ -163,7 +170,6 @@ public class HistoryController {
         List<Transaction> all = readTransactions();
         all.removeIf(t -> t.getTransactionId() == id);
         writeTransactions(all);
-
         BudgetCycle cycle = readCycle();
         if (cycle != null) {
             recalculateBalance(cycle, all);
@@ -171,4 +177,23 @@ public class HistoryController {
             writeCycle(cycle);
         }
     }
+    public void logExpense(double amount, int catId, String note, int cycleId) {
+    List<Transaction> all = readTransactions();
+
+    Transaction t = new Transaction();
+    t.setTransactionId(getNextId());
+    t.logExpense(amount, catId, note);
+    t.setCycleId(cycleId);
+
+    all.add(t);
+    writeTransactions(all);
+
+    BudgetCycle cycle = readCycle();
+    if (cycle != null) {
+        recalculateBalance(cycle, all);
+        limitEngine.calcDailyLimit(cycle);
+        writeCycle(cycle);
+        alertNotifier.check80Percent(cycle);
+    }
+}
 }
