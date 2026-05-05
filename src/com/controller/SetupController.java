@@ -93,4 +93,11 @@ public class SetupController {
         if (!end.isAfter(start)) return false;
         return true;
     }
+
+    public BudgetCycle getSavedCycle() {
+    return readCycle();
+}
+public void saveUpdatedCycle(BudgetCycle cycle) {
+    writeCycle(cycle);
+}
 }
