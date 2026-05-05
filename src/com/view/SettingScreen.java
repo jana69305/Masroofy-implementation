@@ -146,7 +146,7 @@ public class SettingScreen {
         }
 
         // delegate to controller
-        settingcontroller.requestReset();
+        settingcontroller.requestReset(0);
         System.out.println("  ✓ Current cycle has been reset.");
     }
 
@@ -168,7 +168,7 @@ public class SettingScreen {
         }
 
         // delegate to controller
-        settingcontroller.requestReset();
+        settingcontroller.requestReset(0);
         System.out.println("  ✓ Database has been reset.");
     }
 }

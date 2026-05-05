@@ -58,7 +58,10 @@ private void saveSecurity(SecurityConfig sc) {
         System.out.println("Error saving security data.");
     }
 }
-
+public boolean isPinSet() {
+    SecurityConfig sc = loadSecurity();
+    return sc.getHashedPIN() != null && !sc.getHashedPIN().isEmpty();
+}
 // ── checks if entered PIN is correct ─────────────────────────────────────
 public boolean validatePIN(String input) {
 

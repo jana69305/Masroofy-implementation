@@ -20,17 +20,22 @@ public class Settingcontroller {
     authController.togglePrivacyLock(enabled);
 }
 
-    public void requestReset() {
-    
-        List<Transaction> all = historyController.getAll(1);
+   public void requestReset(int cycleId) {
 
-       
-        for (Transaction t : all) {
-            historyController.deleteTransaction(t.getTransactionId());
-        }
+    List<Transaction> all = historyController.getAll(cycleId);
 
-        System.out.println("All transactions deleted. Cycle reset.");
+    if (all == null || all.isEmpty()) {
+        System.out.println("No transactions to reset.");
+        return;
     }
+
+    // delete safely (copy loop)
+    for (int i = 0; i < all.size(); i++) {
+        historyController.deleteTransaction(all.get(i).getTransactionId());
+    }
+
+    System.out.println("All transactions deleted. Cycle reset.");
+}
 
    
     public void changePIN(String newPIN) {

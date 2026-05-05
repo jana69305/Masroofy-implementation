@@ -33,38 +33,63 @@ public class AuthScreen {
      * successfully authenticates or is locked out (in which case the
      * lockout timer is shown first, then the prompt reappears).
      */
-    public void displayPINPrompt() {
-        System.out.println("========================================");
-        System.out.println("         MASROOFY — Authentication      ");
-        System.out.println("========================================");
+public void displayPINPrompt() {
+    System.out.println("========================================");
+    System.out.println("         MASROOFY-Authentication      ");
+    System.out.println("========================================");
+
+    // ── FIRST TIME: no PIN set yet, ask user to create one ───────────────
+    if (!authController.isPinSet()) {
+        System.out.println("\nNo PIN found. Please create a new PIN.");
 
         while (true) {
-            // ── check lockout before every attempt ───────────────────
-            if (authController.isLockedOut()) {
-                showLockout(30);          // LOCKOUT_SECS from AuthController
-                continue;                 // re-check after countdown
-            }
+            System.out.print("Enter new PIN     : ");
+            String newPin = scanner.nextLine().trim();
 
-            System.out.print("\nEnter your PIN: ");
-            pinInput = scanner.nextLine().trim();
-
-            if (pinInput.isEmpty()) {
-                System.out.println("PIN cannot be empty. Please try again.");
+            if (newPin.isEmpty()) {
+                System.out.println("PIN cannot be empty. Try again.");
                 continue;
             }
 
-            // ── delegate validation to the controller ────────────────
-            boolean success = authController.validatePIN(pinInput);
+            System.out.print("Confirm new PIN   : ");
+            String confirmPin = scanner.nextLine().trim();
 
-            if (success) {
-                onUnlock();
-                return;                   // exit the authentication loop
-            } else {
-                // controller already recorded the failed attempt
-                System.out.println("Incorrect PIN.");
+            if (!newPin.equals(confirmPin)) {
+                System.out.println("PINs do not match. Try again.");
+                continue;
             }
+
+            authController.updatePIN(newPin);
+            System.out.println("\n✓ PIN created successfully!");
+            return; // go straight to dashboard on first setup
         }
     }
+
+    // ── RETURNING USER: validate existing PIN ────────────────────────────
+    while (true) {
+        if (authController.isLockedOut()) {
+            showLockout(30);
+            continue;
+        }
+
+        System.out.print("\nEnter your PIN: ");
+        pinInput = scanner.nextLine().trim();
+
+        if (pinInput.isEmpty()) {
+            System.out.println("PIN cannot be empty. Please try again.");
+            continue;
+        }
+
+        boolean success = authController.validatePIN(pinInput);
+
+        if (success) {
+            onUnlock();
+            return;
+        } else {
+            System.out.println("Incorrect PIN.");
+        }
+    }
+}
 
     // ── onUnlock() : void ─────────────────────────────────────────────────
     /**
@@ -73,7 +98,7 @@ public class AuthScreen {
      * is handled by the caller (e.g. Main) which owns the cycle context.
      */
     public void onUnlock() {
-        System.out.println("\n✓ PIN accepted — welcome back!");
+        System.out.println("\n PIN accepted-welcome back!");
         System.out.println("Navigating to dashboard...\n");
     }
 
