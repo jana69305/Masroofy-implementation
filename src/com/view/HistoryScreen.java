@@ -7,7 +7,7 @@ import com.model.Transaction;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
+
 
 /**
  * HistoryScreen — View layer for browsing and managing past expenses.
@@ -131,16 +131,10 @@ public class HistoryScreen {
 
     // ── onFilterByCategory(catId) : void ──────────────────────────────────
     /**
-     * Filters the currently displayed list by category id.
-     * Filtering is done locally on the already-fetched data to keep
-     * the View responsive. (The diagram also shows a controller-side
-     * filterByCategory — either can be used once it is implemented.)
+     * Delegates category filtering to HistoryController.filterByCategory().
      */
     public void onFilterByCategory(int catId) {
-        List<Transaction> all = historyController.getAll(activeCycleId);
-        List<Transaction> filtered = all.stream()
-                .filter(t -> t.getCategoryId() == catId)
-                .collect(Collectors.toList());
+        List<Transaction> filtered = historyController.filterByCategory(catId);
 
         System.out.println("\n— Showing category id " + catId + " —");
         displayHistory(filtered);
@@ -148,9 +142,8 @@ public class HistoryScreen {
 
     // ── onEdit(txId) : void ───────────────────────────────────────────────
     /**
-     * Delegates editing to the controller.
-     * The diagram shows HistoryController.editTransaction(id, amount, catId)
-     * — this will be called once that method is available.
+     * Captures new values from the user and delegates editing
+     * to HistoryController.editTransaction().
      */
     public void onEdit(int txId) {
         System.out.println("\nEditing transaction #" + txId);
@@ -174,10 +167,7 @@ public class HistoryScreen {
         }
 
         // delegate to controller
-        // NOTE: HistoryController.editTransaction() is shown in the class
-        //       diagram but not yet implemented. Uncomment the line below
-        //       once the controller method is available.
-        // historyController.editTransaction(txId, newAmount, newCatId);
+        historyController.editTransaction(txId, newAmount, newCatId);
 
         System.out.println("  ✓ Transaction #" + txId + " updated.");
 
@@ -234,13 +224,8 @@ public class HistoryScreen {
         try {
             java.time.LocalDate date = java.time.LocalDate.parse(dateStr);
 
-            // filter locally — the diagram shows HistoryController.filterByDate()
-            // but it is not yet implemented; we do a client-side filter here.
-            List<Transaction> all = historyController.getAll(activeCycleId);
-            List<Transaction> filtered = all.stream()
-                    .filter(t -> t.getTimestamp() != null
-                              && t.getTimestamp().toLocalDate().equals(date))
-                    .collect(Collectors.toList());
+            // delegate to controller
+            List<Transaction> filtered = historyController.filterByDate(date);
 
             System.out.println("\n— Showing transactions on " + dateStr + " —");
             displayHistory(filtered);

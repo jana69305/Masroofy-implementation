@@ -69,13 +69,12 @@ public class AuthScreen {
     // ── onUnlock() : void ─────────────────────────────────────────────────
     /**
      * Called when the PIN is validated successfully.
-     * Prints a confirmation message; in a full app this would navigate
-     * to the DashboardScreen.
+     * Prints a confirmation message. Navigation to DashboardScreen
+     * is handled by the caller (e.g. Main) which owns the cycle context.
      */
     public void onUnlock() {
         System.out.println("\n✓ PIN accepted — welcome back!");
         System.out.println("Navigating to dashboard...\n");
-        // TODO: navigate to DashboardScreen when it is implemented
     }
 
     // ── showLockout(seconds) : void ───────────────────────────────────────
