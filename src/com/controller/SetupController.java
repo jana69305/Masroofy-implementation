@@ -5,9 +5,6 @@ import com.model.BudgetCycle;
 import java.io.*;
 import java.time.LocalDate;
 
-
-
-
 public class SetupController {
 
     private static final String CYCLE_FILE = "data/cycle.txt";
@@ -97,7 +94,16 @@ public class SetupController {
         return true;
     }
 
+    
     public BudgetCycle getCurrentCycle() {
-    return readCycle();
-}
+        return readCycle();
+    }
+
+    public BudgetCycle getSavedCycle() {
+        return readCycle();
+    }
+
+    public void saveUpdatedCycle(BudgetCycle cycle) {
+        writeCycle(cycle);
+    }
 }
