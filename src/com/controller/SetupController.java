@@ -5,6 +5,9 @@ import com.model.BudgetCycle;
 import java.io.*;
 import java.time.LocalDate;
 
+
+
+
 public class SetupController {
 
     private static final String CYCLE_FILE = "data/cycle.txt";
@@ -93,4 +96,8 @@ public class SetupController {
         if (!end.isAfter(start)) return false;
         return true;
     }
+
+    public BudgetCycle getCurrentCycle() {
+    return readCycle();
+}
 }
