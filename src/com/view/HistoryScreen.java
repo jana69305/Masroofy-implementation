@@ -142,13 +142,23 @@ public class HistoryScreen {
 
     // ── onEdit(txId) : void ───────────────────────────────────────────────
     /**
-     * Captures new values from the user and delegates editing
-     * to HistoryController.editTransaction().
+     * Captures new values from the user (amount, category, note)
+     * and delegates editing to HistoryController.editTransaction().
+     * Handles the boolean return for accurate user feedback.
      */
     public void onEdit(int txId) {
         System.out.println("\nEditing transaction #" + txId);
 
-        System.out.print("  New amount (EGP): ");
+        // ── show category grid so the user knows what IDs to pick ────
+        List<Category> categories = Category.fetchAll();
+        System.out.println("\n  Available categories:");
+        for (Category c : categories) {
+            System.out.println("    " + c.getCategoryId() + ". "
+                    + c.getIcon() + " " + c.getName());
+        }
+
+        // ── new amount ───────────────────────────────────────────────
+        System.out.print("\n  New amount (EGP): ");
         double newAmount;
         try {
             newAmount = Double.parseDouble(scanner.nextLine().trim());
@@ -157,6 +167,7 @@ public class HistoryScreen {
             return;
         }
 
+        // ── new category ─────────────────────────────────────────────
         System.out.print("  New category id: ");
         int newCatId;
         try {
@@ -166,12 +177,24 @@ public class HistoryScreen {
             return;
         }
 
-        // delegate to controller
-        historyController.editTransaction(txId, newAmount, newCatId);
+        // ── new note ─────────────────────────────────────────────────
+        System.out.print("  New note (press Enter to keep current): ");
+        String newNote = scanner.nextLine().trim();
+        if (newNote.isEmpty()) {
+            newNote = "-";
+        }
 
-        System.out.println("  ✓ Transaction #" + txId + " updated.");
+        // ── delegate to controller ───────────────────────────────────
+        boolean success = historyController.editTransaction(
+                txId, newAmount, newCatId, newNote);
 
-        // refresh the list
+        if (success) {
+            System.out.println("  ✓ Transaction #" + txId + " updated.");
+        } else {
+            System.out.println("  ✗ Transaction #" + txId + " not found.");
+        }
+
+        // refresh the list so the user sees the change immediately
         displayedTransactions = historyController.getAll(activeCycleId);
         displayHistory(displayedTransactions);
     }
@@ -193,7 +216,7 @@ public class HistoryScreen {
         historyController.deleteTransaction(txId);
         System.out.println("  ✓ Transaction #" + txId + " deleted.");
 
-        // refresh the list
+        // refresh the list so the user sees the change immediately
         displayedTransactions = historyController.getAll(activeCycleId);
         displayHistory(displayedTransactions);
     }

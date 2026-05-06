@@ -53,7 +53,7 @@ public class Main {
                 new HistoryController(limitEngine, alertNotifier);
 
         Settingcontroller settingController =
-                new Settingcontroller(authController, historyController);
+                new Settingcontroller(authController, historyController, setupController);
 
         // Views
         AuthScreen authScreen = new AuthScreen(authController);
@@ -71,7 +71,8 @@ public class Main {
             System.out.println("3. Add Expense");
             System.out.println("4. Show History");
             System.out.println("5. Apply Daily Rollover");
-            System.out.println("6. Exit");
+            System.out.println("6. Settings");
+            System.out.println("7. Exit");
             System.out.print("Choose option: ");
 
             int choice = Integer.parseInt(scanner.nextLine());
@@ -194,8 +195,15 @@ public class Main {
                 }
             }
 
-            // 6 - Exit
+            // 6 - Settings
             else if (choice == 6) {
+
+                SettingScreen settingScreen = new SettingScreen(settingController);
+                settingScreen.show();
+            }
+
+            // 7 - Exit
+            else if (choice == 7) {
                 System.out.println("Closing Masroofy...");
                 break;
             }

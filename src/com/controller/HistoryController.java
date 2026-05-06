@@ -148,14 +148,18 @@ public class HistoryController {
                 .collect(Collectors.toList());
     }
 
-    public void editTransaction(int id, double amount, int catId) {
+    public boolean editTransaction(int id, double amount, int catId, String note) {
         List<Transaction> all = readTransactions();
+        boolean found = false;
         for (Transaction t : all) {
             if (t.getTransactionId() == id) {
-                t.editEntry(amount, catId);
+                t.editEntry(amount, catId, note);
+                found = true;
                 break;
             }
         }
+        if (!found) return false;
+
         writeTransactions(all);
         BudgetCycle cycle = readCycle();
         if (cycle != null) {
@@ -164,6 +168,7 @@ public class HistoryController {
             writeCycle(cycle);
             alertNotifier.check80Percent(cycle);
         }
+        return true;
     }
 
     public void deleteTransaction(int id) {
@@ -196,4 +201,32 @@ public class HistoryController {
         alertNotifier.check80Percent(cycle);
     }
 }
+
+    // ── US #11: bulk-clear transaction records ────────────────────────────
+    /**
+     * Clears all transaction data by writing an empty file.
+     * Called by Settingcontroller.requestReset().
+     */
+    public void deleteTransactions() {
+        new File("data").mkdirs();
+        try (PrintWriter pw = new PrintWriter(new FileWriter(TRANSACTIONS_FILE))) {
+            // write nothing — file is now empty
+        } catch (IOException e) {
+            System.out.println("Error clearing transactions.");
+        }
+    }
+
+    // ── US #11: clear cycle record ───────────────────────────────────────
+    /**
+     * Clears the cycle data by writing an empty file.
+     * Called by Settingcontroller.requestReset().
+     */
+    public void deleteCycle() {
+        new File("data").mkdirs();
+        try (PrintWriter pw = new PrintWriter(new FileWriter(CYCLE_FILE))) {
+            // write nothing — file is now empty
+        } catch (IOException e) {
+            System.out.println("Error clearing cycle data.");
+        }
+    }
 }

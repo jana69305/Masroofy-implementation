@@ -80,13 +80,20 @@ public void displayPINPrompt() {
             continue;
         }
 
-        boolean success = authController.validatePIN(pinInput);
+        String status = authController.validatePIN(pinInput);
 
-        if (success) {
-            onUnlock();
-            return;
-        } else {
-            System.out.println("Incorrect PIN.");
+        switch (status) {
+            case "SUCCESS":
+                onUnlock();
+                return;
+            case "LOCKED":
+                System.out.println("\n⚠  Too many failed attempts!");
+                showLockout(30);
+                break;
+            case "INVALID":
+            default:
+                System.out.println("Wrong PIN. Try again.");
+                break;
         }
     }
 }

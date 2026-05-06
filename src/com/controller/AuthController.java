@@ -63,12 +63,13 @@ public boolean isPinSet() {
     return sc.getHashedPIN() != null && !sc.getHashedPIN().isEmpty();
 }
 // ── checks if entered PIN is correct ─────────────────────────────────────
-public boolean validatePIN(String input) {
+// Returns "SUCCESS", "INVALID", or "LOCKED"
+public String validatePIN(String input) {
 
     SecurityConfig sc = loadSecurity();
 
-    // if user is locked out, do not even check the PIN
-    if (sc.isLockedOut()) return false;
+    // if user is currently locked out, return LOCKED immediately
+    if (sc.isLockedOut()) return "LOCKED";
 
     // check if entered PIN matches stored PIN
     boolean valid = sc.verifyPIN(input);
@@ -78,12 +79,16 @@ public boolean validatePIN(String input) {
         sc.setFailedAttempts(0);
         sc.setLockoutEndTime(null);
         saveSecurity(sc);
+        return "SUCCESS";
     } else {
         // wrong PIN — record the failed attempt
         recordFailedAttempt();
+        // re-check if this attempt triggered a lockout
+        if (loadSecurity().isLockedOut()) {
+            return "LOCKED";
+        }
+        return "INVALID";
     }
-
-    return valid;
 }
 
 // ── saves a new PIN ───────────────────────────────────────────────────────

@@ -20,8 +20,6 @@ import java.util.Scanner;
  */
 public class SettingScreen {
 
-    // ── no stored attributes (per class diagram) ──────────────────────────
-
     // ── controller dependency (injected) ──────────────────────────────────
     private final Settingcontroller settingcontroller;
 
@@ -130,13 +128,13 @@ public class SettingScreen {
 
     // ── onResetCycle() : void ─────────────────────────────────────────────
     /**
-     * Resets the current budget cycle by deleting all its transactions.
-     * Asks for confirmation first, then delegates to
+     * Resets the current budget cycle.  Asks for confirmation
+     * ("Permanently delete logs?") then delegates to
      * Settingcontroller.requestReset().
      */
     public void onResetCycle() {
         System.out.println("\n── Reset Current Cycle ──────────────────");
-        System.out.println("  ⚠  This will delete ALL transactions in the current cycle.");
+        System.out.println("  ⚠  Permanently delete all transaction logs?");
         System.out.print("  Are you sure? (Y/N): ");
         String confirm = scanner.nextLine().trim().toUpperCase();
 
@@ -146,8 +144,13 @@ public class SettingScreen {
         }
 
         // delegate to controller
-        settingcontroller.requestReset(0);
-        System.out.println("  ✓ Current cycle has been reset.");
+        boolean success = settingcontroller.requestReset();
+
+        if (success) {
+            System.out.println("  ✓ Cycle reset complete. Please initialize a new budget.");
+        } else {
+            System.out.println("  ✗ Reset may not have completed fully.");
+        }
     }
 
     // ── onResetDatabase() : void ──────────────────────────────────────────
@@ -168,7 +171,12 @@ public class SettingScreen {
         }
 
         // delegate to controller
-        settingcontroller.requestReset(0);
-        System.out.println("  ✓ Database has been reset.");
+        boolean success = settingcontroller.requestReset();
+
+        if (success) {
+            System.out.println("  ✓ Database has been fully reset.");
+        } else {
+            System.out.println("  ✗ Reset may not have completed fully.");
+        }
     }
 }

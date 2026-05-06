@@ -28,9 +28,10 @@ public class Transaction {
         this.timestamp = LocalDateTime.now();
     }
  
-    public void editEntry(double amount, int catId) {
+    public void editEntry(double amount, int catId, String note) {
         this.amount = amount;
         this.categoryId = catId;
+        this.note = note;
     }
  
     public void deleteEntry() {
