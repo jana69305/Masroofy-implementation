@@ -8,8 +8,8 @@ import java.util.Map;
 import com.model.BudgetCycle;
 import com.model.CategoryTotal;
 import com.model.Transaction;
- 
-
+import com.model.Category;
+import java.util.stream.Collectors;
 public class DashboardScreen {
  
     private double limitDisplay;
@@ -60,8 +60,14 @@ public class DashboardScreen {
             totalsMap.put(catId, totalsMap.getOrDefault(catId, 0.0) + t.getAmount());
         }
         List<CategoryTotal> totals = new ArrayList<>();
+        List<Category> categories = Category.fetchAll();
         for (Map.Entry<Integer, Double> entry : totalsMap.entrySet()) {
-            totals.add(new CategoryTotal("Category " + entry.getKey(), entry.getValue()));
+            String catName = categories.stream()
+            .filter(c -> c.getCategoryId() == entry.getKey())
+            .map(Category::getName)
+            .findFirst()
+            .orElse("Category " + entry.getKey());
+            totals.add(new CategoryTotal(catName, entry.getValue()));
         }
         renderChart(totals);
     }
