@@ -7,10 +7,8 @@ import java.util.Scanner;
 
 public class SettingScreen {
 
-    // ── controller dependency (injected) ──────────────────────────────────
     private final Settingcontroller settingcontroller;
 
-    // ── scanner for console input ─────────────────────────────────────────
     private final Scanner scanner;
 
     public SettingScreen(Settingcontroller settingcontroller) {
@@ -96,7 +94,6 @@ public class SettingScreen {
             return;
         }
 
-        // delegate to controller
         settingcontroller.changePIN(newPIN);
         System.out.println("  ✓ PIN changed successfully.");
     }
@@ -113,7 +110,6 @@ public class SettingScreen {
             return;
         }
 
-        // delegate to controller
         boolean success = settingcontroller.requestReset();
 
         if (success) {
@@ -135,7 +131,6 @@ public class SettingScreen {
             return;
         }
 
-        // delegate to controller
         boolean success = settingcontroller.requestReset();
 
         if (success) {

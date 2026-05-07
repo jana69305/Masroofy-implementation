@@ -9,17 +9,13 @@ import java.util.Scanner;
 
 public class ExpenseEntryScreen {
 
-    // ── UI state ──────────────────────────────────────────────────────────
     private double amountInput;
     private Category selectedCategory;
 
-    // ── controller dependency (injected) ──────────────────────────────────
     private final HistoryController historyController;
 
-    // ── active cycle id (passed in from the session) ──────────────────────
     private final int activeCycleId;
 
-    // ── scanner for console input ─────────────────────────────────────────
     private final Scanner scanner;
 
     public ExpenseEntryScreen(HistoryController historyController, int activeCycleId) {
@@ -49,11 +45,9 @@ public class ExpenseEntryScreen {
         System.out.println("         MASROOFY — New Expense         ");
         System.out.println("========================================");
 
-        // ── 1. show categories ───────────────────────────────────────
         displayCategoryGrid();
         List<Category> categories = Category.fetchAll();
 
-        // ── 2. pick a category (speed-optimised: just type a number) ─
         int catChoice = -1;
         while (catChoice < 1 || catChoice > categories.size()) {
             System.out.print("Select category (number): ");
@@ -69,7 +63,6 @@ public class ExpenseEntryScreen {
         }
         selectedCategory = categories.get(catChoice - 1);
 
-        // ── 3. enter amount ──────────────────────────────────────────
         amountInput = -1;
         while (amountInput <= 0) {
             System.out.print("Amount (EGP): ");
@@ -84,11 +77,9 @@ public class ExpenseEntryScreen {
             }
         }
 
-        // ── 4. optional note ─────────────────────────────────────────
         System.out.print("Note (optional, press Enter to skip): ");
         String note = scanner.nextLine().trim();
 
-        // ── 5. delegate to controller ────────────────────────────────
         historyController.logExpense(
                 amountInput,
                 selectedCategory.getCategoryId(),

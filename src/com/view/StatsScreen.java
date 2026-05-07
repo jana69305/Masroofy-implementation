@@ -10,20 +10,14 @@ import java.util.Scanner;
 
 public class StatsScreen {
 
-    // ── UI state ──────────────────────────────────────────────────────────
     private double totalSpentDisplay;
 
-    // ── controller dependencies (injected) ────────────────────────────────
     private final HistoryController historyController;
     private final DashboardController dashboardController;
 
-    // ── active cycle id ───────────────────────────────────────────────────
     private final int activeCycleId;
 
-    // ── scanner for console input ─────────────────────────────────────────
     private final Scanner scanner;
-
-    // ── chart width in characters ─────────────────────────────────────────
     private static final int BAR_WIDTH = 30;
 
     public StatsScreen(HistoryController historyController,
@@ -41,11 +35,9 @@ public class StatsScreen {
         System.out.println("        MASROOFY — Spending Stats       ");
         System.out.println("========================================");
 
-        // fetch transactions and delegate aggregation to controller
         List<CategoryTotal> data = dashboardController.aggregateTotals(
                 historyController.getAll(activeCycleId));
 
-        // sum the already-aggregated display values for rendering
         double grandTotal = 0;
         for (CategoryTotal ct : data) {
             grandTotal += ct.getTotal();
@@ -54,7 +46,6 @@ public class StatsScreen {
         displayTotalSpent(grandTotal);
         renderChart(data, grandTotal);
 
-        // navigation option
         System.out.println("\n[H] View full history   [Q] Back");
         System.out.print("Choose: ");
         String choice = scanner.nextLine().trim().toUpperCase();

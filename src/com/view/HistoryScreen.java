@@ -15,16 +15,12 @@ public class HistoryScreen {
     // ── UI state ──────────────────────────────────────────────────────────
     private List<Transaction> displayedTransactions;
 
-    // ── controller dependency (injected) ──────────────────────────────────
     private final HistoryController historyController;
 
-    // ── active cycle id (passed in from the session) ──────────────────────
     private final int activeCycleId;
 
-    // ── scanner for console input ─────────────────────────────────────────
     private final Scanner scanner;
 
-    // ── formatter for pretty timestamps ───────────────────────────────────
     private static final DateTimeFormatter FMT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd  HH:mm");
 
@@ -43,7 +39,6 @@ public class HistoryScreen {
             return;
         }
 
-        // resolve category names once
         List<Category> categories = Category.fetchAll();
 
         System.out.println("\n┌──────┬────────────┬────────────────┬──────────────────┬────────────┐");
@@ -74,11 +69,9 @@ public class HistoryScreen {
         System.out.println("        MASROOFY — Expense History      ");
         System.out.println("========================================");
 
-        // load full history from controller
         displayedTransactions = historyController.getAll(activeCycleId);
         displayHistory(displayedTransactions);
 
-        // action loop
         boolean running = true;
         while (running) {
             System.out.println("\nActions:  [F] Filter by category  [D] Filter by date"
@@ -123,7 +116,6 @@ public class HistoryScreen {
     public void onEdit(int txId) {
         System.out.println("\nEditing transaction #" + txId);
 
-        // ── show category grid so the user knows what IDs to pick ────
         List<Category> categories = Category.fetchAll();
         System.out.println("\n  Available categories:");
         for (Category c : categories) {
@@ -131,7 +123,6 @@ public class HistoryScreen {
                     + c.getIcon() + " " + c.getName());
         }
 
-        // ── new amount ───────────────────────────────────────────────
         System.out.print("\n  New amount (EGP): ");
         double newAmount;
         try {
@@ -141,7 +132,6 @@ public class HistoryScreen {
             return;
         }
 
-        // ── new category ─────────────────────────────────────────────
         System.out.print("  New category id: ");
         int newCatId;
         try {
@@ -151,14 +141,12 @@ public class HistoryScreen {
             return;
         }
 
-        // ── new note ─────────────────────────────────────────────────
         System.out.print("  New note (press Enter to keep current): ");
         String newNote = scanner.nextLine().trim();
         if (newNote.isEmpty()) {
             newNote = "-";
         }
 
-        // ── delegate to controller ───────────────────────────────────
         boolean success = historyController.editTransaction(
                 txId, newAmount, newCatId, newNote);
 
@@ -168,7 +156,6 @@ public class HistoryScreen {
             System.out.println("  ✗ Transaction #" + txId + " not found.");
         }
 
-        // refresh the list so the user sees the change immediately
         displayedTransactions = historyController.getAll(activeCycleId);
         displayHistory(displayedTransactions);
     }
@@ -183,11 +170,9 @@ public class HistoryScreen {
             return;
         }
 
-        // delegate to controller
         historyController.deleteTransaction(txId);
         System.out.println("  ✓ Transaction #" + txId + " deleted.");
 
-        // refresh the list so the user sees the change immediately
         displayedTransactions = historyController.getAll(activeCycleId);
         displayHistory(displayedTransactions);
     }
@@ -216,7 +201,6 @@ public class HistoryScreen {
         try {
             java.time.LocalDate date = java.time.LocalDate.parse(dateStr);
 
-            // delegate to controller
             List<Transaction> filtered = historyController.filterByDate(date);
 
             System.out.println("\n— Showing transactions on " + dateStr + " —");

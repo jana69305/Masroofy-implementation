@@ -6,13 +6,10 @@ import java.util.Scanner;
 
 public class AuthScreen {
 
-    // ── UI state ──────────────────────────────────────────────────────────
     private String pinInput;
 
-    // ── controller dependency (injected) ──────────────────────────────────
     private final AuthController authController;
 
-    // ── scanner for console input ─────────────────────────────────────────
     private final Scanner scanner;
 
     public AuthScreen(AuthController authController) {
@@ -26,7 +23,6 @@ public void displayPINPrompt() {
     System.out.println("         MASROOFY-Authentication      ");
     System.out.println("========================================");
 
-    // ── FIRST TIME: no PIN set yet, ask user to create one ───────────────
     if (!authController.isPinSet()) {
         System.out.println("\nNo PIN found. Please create a new PIN.");
 
@@ -49,11 +45,10 @@ public void displayPINPrompt() {
 
             authController.updatePIN(newPin);
             System.out.println("\n✓ PIN created successfully!");
-            return; // go straight to dashboard on first setup
+            return; 
         }
     }
 
-    // ── RETURNING USER: validate existing PIN ────────────────────────────
     while (true) {
         if (authController.isLockedOut()) {
             showLockout(30);
