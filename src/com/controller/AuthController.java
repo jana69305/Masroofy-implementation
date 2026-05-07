@@ -7,28 +7,27 @@ import java.time.LocalDateTime;
 
 public class AuthController {
 
-// max wrong attempts before lockout
+
 private static final int MAX_ATTEMPTS = 3;
 
-// lockout duration in seconds
 private static final int LOCKOUT_SECS = 30;
 
-// where security data is saved
+
 private static final String SECURITY_FILE = "data/security.txt";
 
 
-// ── reads security data from file ────────────────────────────────────────
+
 private SecurityConfig loadSecurity() {
     File f = new File(SECURITY_FILE);
 
-    // if file does not exist yet, return empty security config
+
     if (!f.exists()) return new SecurityConfig();
 
     try (BufferedReader br = new BufferedReader(new FileReader(f))) {
         String line = br.readLine();
         if (line == null || line.isBlank()) return new SecurityConfig();
 
-        // file stores: hashedPIN,lockEnabled,failedAttempts,lockoutEndTime
+
         String[] parts   = line.split(",", 4);
         String hashedPIN = parts[0];
         boolean locked   = Boolean.parseBoolean(parts[1]);
@@ -62,28 +61,27 @@ public boolean isPinSet() {
     SecurityConfig sc = loadSecurity();
     return sc.getHashedPIN() != null && !sc.getHashedPIN().isEmpty();
 }
-// ── checks if entered PIN is correct ─────────────────────────────────────
-// Returns "SUCCESS", "INVALID", or "LOCKED"
+
 public String validatePIN(String input) {
 
     SecurityConfig sc = loadSecurity();
 
-    // if user is currently locked out, return LOCKED immediately
+ 
     if (sc.isLockedOut()) return "LOCKED";
 
-    // check if entered PIN matches stored PIN
+  
     boolean valid = sc.verifyPIN(input);
 
     if (valid) {
-        // correct PIN — reset failed attempts
+    
         sc.setFailedAttempts(0);
         sc.setLockoutEndTime(null);
         saveSecurity(sc);
         return "SUCCESS";
     } else {
-        // wrong PIN — record the failed attempt
+       
         recordFailedAttempt();
-        // re-check if this attempt triggered a lockout
+     
         if (loadSecurity().isLockedOut()) {
             return "LOCKED";
         }
@@ -95,10 +93,10 @@ public String validatePIN(String input) {
 public void updatePIN(String newPIN) {
     SecurityConfig sc = loadSecurity();
 
-    // hash the new PIN before saving (never save plain text)
+  
     sc.setHashedPIN(SecurityConfig.hashPIN(newPIN));
 
-    // reset any lockout
+
     sc.setFailedAttempts(0);
     sc.setLockoutEndTime(null);
 
@@ -110,10 +108,10 @@ public void updatePIN(String newPIN) {
 public void recordFailedAttempt() {
     SecurityConfig sc = loadSecurity();
 
-    // add one to the counter
+
     sc.recordFailedAttempt();
 
-    // if reached max attempts, start the lockout timer
+   
     if (sc.getFailedAttempts() >= MAX_ATTEMPTS) {
         sc.setLockoutEndTime(LocalDateTime.now().plusSeconds(LOCKOUT_SECS));
         System.out.println("Too many wrong attempts. Locked for "

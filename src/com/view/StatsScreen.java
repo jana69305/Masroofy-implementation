@@ -7,18 +7,7 @@ import com.controller.HistoryController;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * StatsScreen — View layer for spending statistics and pie chart.
- *
- * Responsibilities (thin-view):
- *   • Display total amount spent
- *   • Render a text-based pie chart (proportional bar) per category
- *   • Provide a button to navigate to HistoryScreen
- *
- * All aggregation is delegated to DashboardController.aggregateTotals().
- * The "pie chart" is a console-friendly horizontal bar chart where
- * each category's bar length is proportional to its spending share.
- */
+
 public class StatsScreen {
 
     // ── UI state ──────────────────────────────────────────────────────────
@@ -46,12 +35,7 @@ public class StatsScreen {
         this.scanner = new Scanner(System.in);
     }
 
-    // ── show() : void ─────────────────────────────────────────────────────
-    /**
-     * Main entry point.  Fetches transactions, delegates aggregation
-     * to DashboardController, renders chart, and offers navigation
-     * to HistoryScreen.
-     */
+ 
     public void show() {
         System.out.println("========================================");
         System.out.println("        MASROOFY — Spending Stats       ");
@@ -80,22 +64,13 @@ public class StatsScreen {
         }
     }
 
-    // ── displayTotalSpent(total) : void ───────────────────────────────────
-    /**
-     * Shows the total spending figure for the current cycle.
-     */
+  
     public void displayTotalSpent(double total) {
         this.totalSpentDisplay = total;
         System.out.printf("%n  Total Spent:  %.2f EGP%n", total);
     }
 
-    // ── renderChart(data) : void ──────────────────────────────────────────
-    /**
-     * Renders a console pie chart (horizontal bar chart) from the
-     * given list of CategoryTotal objects.
-     *
-     * Each bar's length is proportional to its share of total spending.
-     */
+ 
     public void renderChart(List<CategoryTotal> data, double grandTotal) {
         if (data.isEmpty()) {
             System.out.println("\n  (no spending data to chart)\n");
@@ -117,11 +92,7 @@ public class StatsScreen {
         System.out.println("  └────────────────────────────────────────────┘");
     }
 
-    // ── onViewHistory() : void ────────────────────────────────────────────
-    /**
-     * Navigates to the HistoryScreen.
-     * Creates a new HistoryScreen and calls show().
-     */
+  
     public void onViewHistory() {
         System.out.println("\nNavigating to History...\n");
         HistoryScreen historyScreen = new HistoryScreen(historyController, activeCycleId);

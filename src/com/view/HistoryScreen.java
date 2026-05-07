@@ -9,17 +9,7 @@ import java.util.List;
 import java.util.Scanner;
 
 
-/**
- * HistoryScreen — View layer for browsing and managing past expenses.
- *
- * Responsibilities (thin-view):
- *   • Render a formatted list of transactions
- *   • Provide filter UI for category and date
- *   • Trigger onEdit / onDelete via HistoryController
- *
- * All data retrieval, persistence, and balance recalculation
- * is delegated to HistoryController.
- */
+
 public class HistoryScreen {
 
     // ── UI state ──────────────────────────────────────────────────────────
@@ -44,10 +34,7 @@ public class HistoryScreen {
         this.scanner = new Scanner(System.in);
     }
 
-    // ── displayHistory(list) : void ───────────────────────────────────────
-    /**
-     * Renders the given transaction list as a formatted table.
-     */
+   
     public void displayHistory(List<Transaction> list) {
         this.displayedTransactions = list;
 
@@ -81,11 +68,7 @@ public class HistoryScreen {
         System.out.println("└──────┴────────────┴────────────────┴──────────────────┴────────────┘");
     }
 
-    // ── show() : void ─────────────────────────────────────────────────────
-    /**
-     * Main entry point.  Loads all transactions for the active cycle,
-     * displays them, and presents an action menu.
-     */
+  
     public void show() {
         System.out.println("========================================");
         System.out.println("        MASROOFY — Expense History      ");
@@ -129,10 +112,6 @@ public class HistoryScreen {
         }
     }
 
-    // ── onFilterByCategory(catId) : void ──────────────────────────────────
-    /**
-     * Delegates category filtering to HistoryController.filterByCategory().
-     */
     public void onFilterByCategory(int catId) {
         List<Transaction> filtered = historyController.filterByCategory(catId);
 
@@ -140,12 +119,7 @@ public class HistoryScreen {
         displayHistory(filtered);
     }
 
-    // ── onEdit(txId) : void ───────────────────────────────────────────────
-    /**
-     * Captures new values from the user (amount, category, note)
-     * and delegates editing to HistoryController.editTransaction().
-     * Handles the boolean return for accurate user feedback.
-     */
+  
     public void onEdit(int txId) {
         System.out.println("\nEditing transaction #" + txId);
 
@@ -199,10 +173,7 @@ public class HistoryScreen {
         displayHistory(displayedTransactions);
     }
 
-    // ── onDelete(txId) : void ─────────────────────────────────────────────
-    /**
-     * Asks for confirmation, then delegates deletion to the controller.
-     */
+   
     public void onDelete(int txId) {
         System.out.print("\nDelete transaction #" + txId + "? (Y/N): ");
         String confirm = scanner.nextLine().trim().toUpperCase();
@@ -221,9 +192,7 @@ public class HistoryScreen {
         displayHistory(displayedTransactions);
     }
 
-    // ══════════════════════════════════════════════════════════════════════
-    //   Private prompt helpers — keep the action-loop readable
-    // ══════════════════════════════════════════════════════════════════════
+
 
     private void promptFilterByCategory() {
         List<Category> cats = Category.fetchAll();

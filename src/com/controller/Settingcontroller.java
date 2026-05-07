@@ -19,12 +19,7 @@ public class Settingcontroller {
         authController.togglePrivacyLock(enabled);
     }
 
-    // ── US #11: cycle reset & data clearance ─────────────────────────────
-    /**
-     * Clears all transaction and cycle data, then verifies the app
-     * is back in the 'uninitialized' state via SetupController.
-     * Returns true if reset was successful (no active cycle remains).
-     */
+
     public boolean requestReset() {
         // 1. clear transaction records
         historyController.deleteTransactions();
@@ -44,7 +39,7 @@ public class Settingcontroller {
         return noActiveCycle;
     }
 
-    // ── US #12: change PIN ───────────────────────────────────────────────
+
     public void changePIN(String newPIN) {
         authController.updatePIN(newPIN);
     }

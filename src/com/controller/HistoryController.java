@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class HistoryController {
 
-    // no stored attributes — matches class diagram
+   
 
     private static final String TRANSACTIONS_FILE = "data/transactions.txt";
     private static final String CYCLE_FILE        = "data/cycle.txt";
@@ -202,11 +202,7 @@ public class HistoryController {
     }
 }
 
-    // ── US #11: bulk-clear transaction records ────────────────────────────
-    /**
-     * Clears all transaction data by writing an empty file.
-     * Called by Settingcontroller.requestReset().
-     */
+  
     public void deleteTransactions() {
         new File("data").mkdirs();
         try (PrintWriter pw = new PrintWriter(new FileWriter(TRANSACTIONS_FILE))) {
@@ -216,11 +212,6 @@ public class HistoryController {
         }
     }
 
-    // ── US #11: clear cycle record ───────────────────────────────────────
-    /**
-     * Clears the cycle data by writing an empty file.
-     * Called by Settingcontroller.requestReset().
-     */
     public void deleteCycle() {
         new File("data").mkdirs();
         try (PrintWriter pw = new PrintWriter(new FileWriter(CYCLE_FILE))) {

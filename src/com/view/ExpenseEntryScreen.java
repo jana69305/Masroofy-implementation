@@ -6,18 +6,7 @@ import com.model.Category;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * ExpenseEntryScreen — View layer for quick expense entry.
- *
- * Responsibilities (thin-view):
- *   • Display the category grid for fast selection
- *   • Capture amount, category choice, and optional note
- *   • Delegate the save operation to HistoryController.logExpense()
- *   • Show validation errors without embedding business rules
- *
- * Optimised for speed: minimal prompts, category grid lets the user
- * pick by number rather than typing a name.
- */
+
 public class ExpenseEntryScreen {
 
     // ── UI state ──────────────────────────────────────────────────────────
@@ -39,12 +28,7 @@ public class ExpenseEntryScreen {
         this.scanner = new Scanner(System.in);
     }
 
-    // ── displayCategoryGrid() : void ──────────────────────────────────────
-    /**
-     * Renders available categories in a compact grid layout.
-     * Each category is shown with its icon and a selection number
-     * so the user can pick quickly.
-     */
+ 
     public void displayCategoryGrid() {
         List<Category> categories = Category.fetchAll();
 
@@ -59,11 +43,7 @@ public class ExpenseEntryScreen {
         System.out.println("└────────────────────────────────────┘");
     }
 
-    // ── onSave() : void ───────────────────────────────────────────────────
-    /**
-     * Main entry point.  Displays the form, captures user input, and
-     * delegates to HistoryController to persist the expense.
-     */
+
     public void onSave() {
         System.out.println("========================================");
         System.out.println("         MASROOFY — New Expense         ");
@@ -122,11 +102,7 @@ public class ExpenseEntryScreen {
                 + " — " + String.format("%.2f", amountInput) + " EGP\n");
     }
 
-    // ── showError(msg) : void ─────────────────────────────────────────────
-    /**
-     * Displays an inline validation error.  Keeps the View thin —
-     * no business-rule checks happen here.
-     */
+ 
     public void showError(String msg) {
         System.out.println("  ✗ " + msg);
     }

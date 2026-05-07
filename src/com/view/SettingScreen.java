@@ -4,20 +4,7 @@ import com.controller.Settingcontroller;
 
 import java.util.Scanner;
 
-/**
- * SettingScreen — View layer for app-wide preferences and data management.
- *
- * Responsibilities (thin-view):
- *   • Display a settings menu
- *   • Capture user input for each option
- *   • Delegate all logic to Settingcontroller methods:
- *       - togglePrivacyLock(boolean)
- *       - changePIN(String)
- *       - requestReset()
- *
- * No business logic lives here — toggle state, PIN hashing,
- * and data deletion are all handled by the controller layer.
- */
+
 public class SettingScreen {
 
     // ── controller dependency (injected) ──────────────────────────────────
@@ -31,11 +18,7 @@ public class SettingScreen {
         this.scanner = new Scanner(System.in);
     }
 
-    // ── show() : void ─────────────────────────────────────────────────────
-    /**
-     * Main entry point.  Displays the settings menu in a loop
-     * until the user chooses to go back.
-     */
+  
     public void show() {
         boolean running = true;
 
@@ -76,11 +59,7 @@ public class SettingScreen {
         }
     }
 
-    // ── onToggleLock(enabled) : void ──────────────────────────────────────
-    /**
-     * Asks the user whether to enable or disable the privacy lock,
-     * then delegates to Settingcontroller.togglePrivacyLock().
-     */
+   
     public void onToggleLock() {
         System.out.println("\n── Privacy Lock ─────────────────────────");
         System.out.print("  Enable privacy lock? (Y/N): ");
@@ -97,11 +76,7 @@ public class SettingScreen {
         }
     }
 
-    // ── onChangePIN() : void ──────────────────────────────────────────────
-    /**
-     * Prompts for a new PIN (with confirmation), then delegates
-     * to Settingcontroller.changePIN().
-     */
+ 
     public void onChangePIN() {
         System.out.println("\n── Change PIN ───────────────────────────");
 
@@ -126,12 +101,7 @@ public class SettingScreen {
         System.out.println("  ✓ PIN changed successfully.");
     }
 
-    // ── onResetCycle() : void ─────────────────────────────────────────────
-    /**
-     * Resets the current budget cycle.  Asks for confirmation
-     * ("Permanently delete logs?") then delegates to
-     * Settingcontroller.requestReset().
-     */
+   
     public void onResetCycle() {
         System.out.println("\n── Reset Current Cycle ──────────────────");
         System.out.println("  ⚠  Permanently delete all transaction logs?");
@@ -153,12 +123,7 @@ public class SettingScreen {
         }
     }
 
-    // ── onResetDatabase() : void ──────────────────────────────────────────
-    /**
-     * Factory-resets the entire database (transactions + cycle data).
-     * Requires double confirmation because this is destructive.
-     * Delegates to Settingcontroller.requestReset() for the data wipe.
-     */
+  
     public void onResetDatabase() {
         System.out.println("\n── Reset Entire Database ────────────────");
         System.out.println("  ⚠  WARNING: This will permanently erase ALL data!");
