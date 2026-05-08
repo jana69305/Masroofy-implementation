@@ -7,9 +7,18 @@ import com.model.*;
 import java.util.Scanner;
 import java.util.List;
 import java.time.LocalDate;
-
+/**
+ * Entry point for the Masroofy budget management application.
+ * Initializes all controllers and views, handles user authentication,
+ * and runs the main navigation menu loop.
+ */
 public class Main {
-
+    /**
+     * Checks whether the user has spent 80% or more of their budget allowance
+     * and prints an appropriate warning or critical alert to the console.
+     *
+     * @param cycle the current {@link BudgetCycle} to check; does nothing if {@code null}
+     */
     private static void check80PercentAlert(BudgetCycle cycle) {
 
         if (cycle == null) return;
@@ -29,7 +38,13 @@ public class Main {
             System.out.println("\n⚠️ Warning: You have used 80% of your allowance.");
         }
     }
-
+/**
+     * Launches the Masroofy application.
+     * Sets up all controllers and views, prompts for authentication,
+     * then enters the main menu loop where the user can manage their budget.
+     *
+     * @param args command-line arguments (not used)
+     */
     public static void main(String[] args) {
 
         System.out.println("START APP");

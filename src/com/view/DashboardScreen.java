@@ -10,15 +10,33 @@ import com.model.CategoryTotal;
 import com.model.Transaction;
 import com.model.Category;
 import java.util.stream.Collectors;
+
+/**
+ * View class responsible for displaying the main dashboard screen.
+ * Shows the safe daily limit, spending breakdown by category,
+ * and handles navigation to the expense entry screen.
+ */
+
 public class DashboardScreen {
- 
+    /** The current safe daily limit value displayed on the dashboard. */
     private double limitDisplay;
- 
+    
+    /**
+ * Displays the current safe daily limit on the dashboard.
+ * @param limit the calculated daily limit in EGP to display
+ */
+
     public void displayDailyLimit(double limit) {
         this.limitDisplay = limit;
         System.out.println("Today's Safe Daily Limit: " + limit + " EGP");
     }
- 
+ /**
+ * Renders a text-based spending breakdown chart by category.
+ * Shows each category with its percentage and total amount spent.
+ * Displays a placeholder message if no data is available.
+ * @param data list of CategoryTotal objects to display in the chart
+ */
+
     public void renderChart(List<CategoryTotal> data) {
         if (data == null || data.isEmpty()) {
             System.out.println("No data available. Log an expense to see your insights.");
@@ -35,15 +53,27 @@ public class DashboardScreen {
                 ct.getCategoryName(), percentage, ct.getTotal());
         }
     }
- 
+ /**
+ * Handles navigation to the expense entry screen.
+ * Called when the user wants to log a new expense from the dashboard.
+ */
+
     public void onLogExpense() {
         System.out.println("Navigating to Expense Entry Screen...");
     }
- 
+ /**
+ * Displays an alert message on the dashboard.
+ * @param msg the alert message to display
+ */
     public void showAlert(String msg) {
         System.out.println("[ALERT] " + msg);
     }
- 
+ /**
+ * Loads and displays the full dashboard for the active budget cycle.
+ * Shows the daily limit and spending breakdown by category.
+ * @param cycle the current active BudgetCycle
+ * @param transactions the list of transactions for the current cycle
+ */
     public void loadDashboard(BudgetCycle cycle, List<Transaction> transactions) {
         if (cycle == null) {
             System.out.println("No active cycle. Please set up a budget cycle first.");
@@ -71,7 +101,12 @@ public class DashboardScreen {
         }
         renderChart(totals);
     }
- 
+    
+ /**
+ * Returns the current limit display value.
+ * @return the safe daily limit currently displayed on the dashboard
+ */
+
     public double getLimitDisplay() {
         return limitDisplay;
     }

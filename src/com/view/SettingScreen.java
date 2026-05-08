@@ -3,20 +3,32 @@ package com.view;
 import com.controller.Settingcontroller;
 
 import java.util.Scanner;
-
-
+/**
+ * Handles the settings screen for the Masroofy application.
+ * Provides options to toggle the privacy lock, change the PIN,
+ * reset the current budget cycle, or reset the entire database.
+ */
 public class SettingScreen {
 
+    /** The controller responsible for handling settings logic. */
     private final Settingcontroller settingcontroller;
 
+    /** Scanner used to read user input from the console. */
     private final Scanner scanner;
 
+    /**
+     * Constructs a SettingScreen with the given settings controller.
+     *
+     * @param settingcontroller the {@link Settingcontroller} handling settings operations
+     */
     public SettingScreen(Settingcontroller settingcontroller) {
         this.settingcontroller = settingcontroller;
         this.scanner = new Scanner(System.in);
     }
-
-  
+/**
+     * Displays the settings menu and handles user navigation.
+     * Loops until the user chooses to go back by entering 'Q'.
+     */
     public void show() {
         boolean running = true;
 
@@ -56,8 +68,11 @@ public class SettingScreen {
             }
         }
     }
-
-   
+/**
+     * Handles the privacy lock toggle option.
+     * Prompts the user to enable or disable the privacy lock
+     * and delegates to {@link Settingcontroller#togglePrivacyLock(boolean)}.
+     */
     public void onToggleLock() {
         System.out.println("\n── Privacy Lock ─────────────────────────");
         System.out.print("  Enable privacy lock? (Y/N): ");
@@ -73,8 +88,12 @@ public class SettingScreen {
             System.out.println("  ✗ Invalid input — expected Y or N.");
         }
     }
-
- 
+/**
+     * Handles the change PIN option.
+     * Prompts the user to enter and confirm a new PIN,
+     * then delegates to {@link Settingcontroller#changePIN(String)}.
+     * Cancels if the PIN is empty or the confirmation does not match.
+     */
     public void onChangePIN() {
         System.out.println("\n── Change PIN ───────────────────────────");
 
@@ -97,8 +116,11 @@ public class SettingScreen {
         settingcontroller.changePIN(newPIN);
         System.out.println("  ✓ PIN changed successfully.");
     }
-
-   
+/**
+     * Handles the reset current cycle option.
+     * Asks for confirmation before permanently deleting all transaction logs
+     * and resetting the active budget cycle via {@link Settingcontroller#requestReset()}.
+     */
     public void onResetCycle() {
         System.out.println("\n── Reset Current Cycle ──────────────────");
         System.out.println("  ⚠  Permanently delete all transaction logs?");
@@ -118,8 +140,11 @@ public class SettingScreen {
             System.out.println("  ✗ Reset may not have completed fully.");
         }
     }
-
-  
+ /**
+     * Handles the reset entire database option.
+     * Requires the user to type 'RESET' to confirm before permanently erasing all data
+     * via {@link Settingcontroller#requestReset()}.
+     */
     public void onResetDatabase() {
         System.out.println("\n── Reset Entire Database ────────────────");
         System.out.println("  ⚠  WARNING: This will permanently erase ALL data!");

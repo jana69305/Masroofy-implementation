@@ -5,26 +5,43 @@ import com.model.Category;
 
 import java.util.List;
 import java.util.Scanner;
-
-
+/**
+ * Handles the expense entry screen for the Masroofy application.
+ * Allows the user to select a category, enter an amount and optional note,
+ * and save a new expense transaction to the current budget cycle.
+ */
 public class ExpenseEntryScreen {
 
+ /** The amount entered by the user for the expense. */
     private double amountInput;
+
+    /** The category selected by the user for the expense. */
     private Category selectedCategory;
 
+    /** The controller responsible for logging and managing transactions. */
     private final HistoryController historyController;
 
+    /** The ID of the currently active budget cycle. */
     private final int activeCycleId;
 
+    /** Scanner used to read user input from the console. */
     private final Scanner scanner;
 
+    /**
+     * Constructs an ExpenseEntryScreen with the given history controller and active cycle ID.
+     *
+     * @param historyController the {@link HistoryController} used to log expenses
+     * @param activeCycleId     the ID of the currently active budget cycle
+     */
     public ExpenseEntryScreen(HistoryController historyController, int activeCycleId) {
         this.historyController = historyController;
         this.activeCycleId = activeCycleId;
         this.scanner = new Scanner(System.in);
     }
-
- 
+/**
+     * Displays all available spending categories in a formatted grid.
+     * Each category is shown with its index number, icon, and name.
+     */
     public void displayCategoryGrid() {
         List<Category> categories = Category.fetchAll();
 
@@ -38,8 +55,12 @@ public class ExpenseEntryScreen {
 
         System.out.println("└────────────────────────────────────┘");
     }
-
-
+    /**
+     * Handles the full expense entry flow.
+     * Prompts the user to select a category, enter an amount, and optionally add a note.
+     * Validates all inputs and logs the expense using {@link HistoryController#logExpense}.
+     * Displays a confirmation message upon successful save.
+     */
     public void onSave() {
         System.out.println("========================================");
         System.out.println("         MASROOFY — New Expense         ");
@@ -92,8 +113,11 @@ public class ExpenseEntryScreen {
                 + selectedCategory.getName()
                 + " — " + String.format("%.2f", amountInput) + " EGP\n");
     }
-
- 
+/**
+     * Displays a formatted error message to the user.
+     *
+     * @param msg the error message to display
+     */
     public void showError(String msg) {
         System.out.println("  ✗ " + msg);
     }

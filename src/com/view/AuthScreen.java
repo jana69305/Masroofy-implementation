@@ -2,22 +2,38 @@ package com.view;
 
 import com.controller.AuthController;
 import java.util.Scanner;
-
-
+/**
+ * Handles the authentication screen for the Masroofy application.
+ * Displays the PIN prompt, manages PIN creation for first-time users,
+ * and handles lockout behavior after repeated failed attempts.
+ */
 public class AuthScreen {
 
+    /** The PIN input entered by the user. */
     private String pinInput;
 
+    /** The controller responsible for PIN validation and authentication logic. */
     private final AuthController authController;
 
+    /** Scanner used to read user input from the console. */
     private final Scanner scanner;
 
+     /**
+     * Constructs an AuthScreen with the given authentication controller.
+     *
+     * @param authController the {@link AuthController} handling PIN logic
+     */
     public AuthScreen(AuthController authController) {
         this.authController = authController;
         this.scanner = new Scanner(System.in);
     }
 
-
+/**
+     * Displays the authentication screen to the user.
+     * If no PIN has been set, prompts the user to create and confirm a new PIN.
+     * Otherwise, prompts for the existing PIN and handles validation,
+     * including lockout if the maximum number of failed attempts is exceeded.
+     */
 public void displayPINPrompt() {
     System.out.println("========================================");
     System.out.println("         MASROOFY-Authentication      ");
@@ -81,13 +97,21 @@ public void displayPINPrompt() {
     }
 }
 
-  
+  /**
+     * Called when the user successfully authenticates.
+     * Prints a welcome message and navigates to the dashboard.
+     */
     public void onUnlock() {
         System.out.println("\n PIN accepted-welcome back!");
         System.out.println("Navigating to dashboard...\n");
     }
 
- 
+ /**
+     * Displays a countdown lockout timer to the user.
+     * Blocks the thread for the given number of seconds, updating the console each second.
+     *
+     * @param seconds the number of seconds to lock the user out for
+     */
     public void showLockout(int seconds) {
         System.out.println("\n⚠  Too many failed attempts!");
         System.out.println("   Please wait before trying again.\n");
