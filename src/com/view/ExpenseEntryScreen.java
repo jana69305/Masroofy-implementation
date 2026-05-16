@@ -42,19 +42,17 @@ public class ExpenseEntryScreen {
      * Displays all available spending categories in a formatted grid.
      * Each category is shown with its index number, icon, and name.
      */
-    public void displayCategoryGrid() {
-        List<Category> categories = Category.fetchAll();
+   public void displayCategoryGrid() {
+    List<Category> categories = Category.fetchAll();
 
-        System.out.println("\n┌──────────── Categories ────────────┐");
+    System.out.println("\nCategories:");
 
-        for (int i = 0; i < categories.size(); i++) {
-            Category cat = categories.get(i);
-            System.out.printf("│  %d. %s  %-15s            │%n",
-                    i + 1, cat.getIcon(), cat.getName());
-        }
-
-        System.out.println("└────────────────────────────────────┘");
+    for (int i = 0; i < categories.size(); i++) {
+        Category cat = categories.get(i);
+        System.out.printf("%d. %s%n",
+                i + 1, cat.getName());
     }
+}
     /**
      * Handles the full expense entry flow.
      * Prompts the user to select a category, enter an amount, and optionally add a note.
@@ -63,7 +61,7 @@ public class ExpenseEntryScreen {
      */
     public void onSave() {
         System.out.println("========================================");
-        System.out.println("         MASROOFY — New Expense         ");
+        System.out.println("         MASROOFY  New Expense         ");
         System.out.println("========================================");
 
         displayCategoryGrid();
@@ -79,7 +77,7 @@ public class ExpenseEntryScreen {
                     showError("Please choose a number between 1 and " + categories.size() + ".");
                 }
             } catch (NumberFormatException e) {
-                showError("Invalid input — enter a number.");
+                showError("Invalid input enter a number.");
             }
         }
         selectedCategory = categories.get(catChoice - 1);
@@ -94,7 +92,7 @@ public class ExpenseEntryScreen {
                     showError("Amount must be greater than zero.");
                 }
             } catch (NumberFormatException e) {
-                showError("Invalid amount — enter a number.");
+                showError("Invalid amount  enter a number.");
             }
         }
 
@@ -108,10 +106,9 @@ public class ExpenseEntryScreen {
                 activeCycleId
         );
 
-        System.out.println("\n✓ Expense saved!  "
-                + selectedCategory.getIcon() + " "
-                + selectedCategory.getName()
-                + " — " + String.format("%.2f", amountInput) + " EGP\n");
+   System.out.println("\n Expense saved!  "
+        + selectedCategory.getName()
+        + " — " + String.format("%.2f", amountInput) + " EGP\n");
     }
 /**
      * Displays a formatted error message to the user.

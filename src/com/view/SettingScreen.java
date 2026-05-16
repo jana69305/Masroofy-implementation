@@ -34,7 +34,7 @@ public class SettingScreen {
 
         while (running) {
             System.out.println("========================================");
-            System.out.println("          MASROOFY — Settings           ");
+            System.out.println("          MASROOFY  Settings           ");
             System.out.println("========================================");
             System.out.println();
             System.out.println("  [1]  Toggle Privacy Lock");
@@ -64,7 +64,7 @@ public class SettingScreen {
                     running = false;
                     break;
                 default:
-                    System.out.println("  ✗ Unknown option.");
+                    System.out.println("   Unknown option.");
             }
         }
     }
@@ -74,7 +74,7 @@ public class SettingScreen {
      * and delegates to {@link Settingcontroller#togglePrivacyLock(boolean)}.
      */
     public void onToggleLock() {
-        System.out.println("\n── Privacy Lock ─────────────────────────");
+        System.out.println("\n Privacy Lock ");
         System.out.print("  Enable privacy lock? (Y/N): ");
         String input = scanner.nextLine().trim().toUpperCase();
 
@@ -95,7 +95,7 @@ public class SettingScreen {
      * Cancels if the PIN is empty or the confirmation does not match.
      */
     public void onChangePIN() {
-        System.out.println("\n── Change PIN ───────────────────────────");
+        System.out.println("\n Change PIN ");
 
         System.out.print("  Enter new PIN: ");
         String newPIN = scanner.nextLine().trim();
@@ -109,12 +109,12 @@ public class SettingScreen {
         String confirm = scanner.nextLine().trim();
 
         if (!newPIN.equals(confirm)) {
-            System.out.println("  ✗ PINs do not match. Change cancelled.");
+            System.out.println("   PINs do not match. Change cancelled.");
             return;
         }
 
         settingcontroller.changePIN(newPIN);
-        System.out.println("  ✓ PIN changed successfully.");
+        System.out.println("  PIN changed successfully.");
     }
 /**
      * Handles the reset current cycle option.
@@ -122,8 +122,8 @@ public class SettingScreen {
      * and resetting the active budget cycle via {@link Settingcontroller#requestReset()}.
      */
     public void onResetCycle() {
-        System.out.println("\n── Reset Current Cycle ──────────────────");
-        System.out.println("  ⚠  Permanently delete all transaction logs?");
+        System.out.println("\n Reset Current Cycle ");
+        System.out.println("    Permanently delete all transaction logs?");
         System.out.print("  Are you sure? (Y/N): ");
         String confirm = scanner.nextLine().trim().toUpperCase();
 
@@ -135,9 +135,9 @@ public class SettingScreen {
         boolean success = settingcontroller.requestReset();
 
         if (success) {
-            System.out.println("  ✓ Cycle reset complete. Please initialize a new budget.");
+            System.out.println("   Cycle reset complete. Please initialize a new budget.");
         } else {
-            System.out.println("  ✗ Reset may not have completed fully.");
+            System.out.println("   Reset may not have completed fully.");
         }
     }
  /**
@@ -146,8 +146,8 @@ public class SettingScreen {
      * via {@link Settingcontroller#requestReset()}.
      */
     public void onResetDatabase() {
-        System.out.println("\n── Reset Entire Database ────────────────");
-        System.out.println("  ⚠  WARNING: This will permanently erase ALL data!");
+        System.out.println("\n Reset Entire Database ");
+        System.out.println("    WARNING: This will permanently erase ALL data!");
         System.out.print("  Type 'RESET' to confirm: ");
         String confirm = scanner.nextLine().trim();
 
@@ -159,9 +159,9 @@ public class SettingScreen {
         boolean success = settingcontroller.requestReset();
 
         if (success) {
-            System.out.println("  ✓ Database has been fully reset.");
+            System.out.println("   Database has been fully reset.");
         } else {
-            System.out.println("  ✗ Reset may not have completed fully.");
+            System.out.println("   Reset may not have completed fully.");
         }
     }
 }

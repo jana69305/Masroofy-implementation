@@ -8,60 +8,33 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Handles the expense history screen for the Masroofy application.
- * Displays all transactions for the active budget cycle and allows
- * the user to filter, edit, and delete transactions.
- */
 public class HistoryScreen {
 
-/** The list of transactions currently displayed on screen. */
     private List<Transaction> displayedTransactions;
-
-    /** The controller responsible for managing transaction data. */
     private final HistoryController historyController;
-
-    /** The ID of the currently active budget cycle. */
     private final int activeCycleId;
-
-    /** Scanner used to read user input from the console. */
     private final Scanner scanner;
 
-    /** Formatter used to display transaction timestamps in a readable format. */
     private static final DateTimeFormatter FMT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd  HH:mm");
 
-    /**
-     * Constructs a HistoryScreen with the given history controller and active cycle ID.
-     *
-     * @param historyController the {@link HistoryController} used to retrieve and manage transactions
-     * @param activeCycleId     the ID of the currently active budget cycle
-     */
     public HistoryScreen(HistoryController historyController, int activeCycleId) {
         this.historyController = historyController;
         this.activeCycleId = activeCycleId;
         this.scanner = new Scanner(System.in);
     }
-/**
-     * Renders the given list of transactions in a formatted table.
-     * Displays each transaction's ID, amount, category, timestamp, and note.
-     * Shows a message if the list is empty.
-     *
-     * @param list the list of {@link Transaction} objects to display
-     */
+
     public void displayHistory(List<Transaction> list) {
         this.displayedTransactions = list;
 
         if (list.isEmpty()) {
-            System.out.println("\n  (no transactions to display)\n");
+            System.out.println("\n(no transactions to display)\n");
             return;
         }
 
         List<Category> categories = Category.fetchAll();
 
-        System.out.println("\n┌──────┬────────────┬────────────────┬──────────────────┬────────────┐");
-        System.out.println("│  ID  │   Amount   │   Category     │   Date & Time    │   Note     │");
-        System.out.println("├──────┼────────────┼────────────────┼──────────────────┼────────────┤");
+        System.out.println("ID   Amount   Category   Date & Time   Note");
 
         for (Transaction t : list) {
             String catName = categories.stream()
@@ -70,24 +43,18 @@ public class HistoryScreen {
                     .findFirst()
                     .orElse("Unknown");
 
-            System.out.printf("│ %4d │ %8.2f   │ %-14s │ %-16s │ %-10s │%n",
+            System.out.printf("%4d  %8.2f   %-14s %-16s %-10s%n",
                     t.getTransactionId(),
                     t.getAmount(),
                     catName,
-                    t.getTimestamp() != null ? t.getTimestamp().format(FMT) : "—",
-                    t.getNote() != null ? t.getNote() : "—");
+                    t.getTimestamp() != null ? t.getTimestamp().format(FMT) : "",
+                    t.getNote() != null ? t.getNote() : "");
         }
-
-        System.out.println("└──────┴────────────┴────────────────┴──────────────────┴────────────┘");
     }
-/**
-     * Displays the history screen and handles user navigation.
-     * Loads all transactions for the active cycle and presents options
-     * to filter, edit, delete, refresh, or quit.
-     */
+
     public void show() {
         System.out.println("========================================");
-        System.out.println("        MASROOFY — Expense History      ");
+        System.out.println("        MASROOFY  Expense History      ");
         System.out.println("========================================");
 
         displayedTransactions = historyController.getAll(activeCycleId);
@@ -96,8 +63,9 @@ public class HistoryScreen {
         boolean running = true;
         while (running) {
             System.out.println("\nActions:  [F] Filter by category  [D] Filter by date"
-                             + "  [E] Edit  [X] Delete  [R] Refresh  [Q] Quit");
+                    + "  [E] Edit  [X] Delete  [R] Refresh  [Q] Quit");
             System.out.print("Choose: ");
+
             String choice = scanner.nextLine().trim().toUpperCase();
 
             switch (choice) {
@@ -121,119 +89,96 @@ public class HistoryScreen {
                     running = false;
                     break;
                 default:
-                    System.out.println("  ✗ Unknown option.");
+                    System.out.println("Unknown option.");
             }
         }
     }
-/**
-     * Filters and displays transactions belonging to the specified category.
-     *
-     * @param catId the ID of the category to filter by
-     */
+
     public void onFilterByCategory(int catId) {
         List<Transaction> filtered = historyController.filterByCategory(catId);
 
-        System.out.println("\n— Showing category id " + catId + " —");
+        System.out.println("\n Showing category id " + catId);
         displayHistory(filtered);
     }
-/**
-     * Handles the edit flow for a specific transaction.
-     * Prompts the user for a new amount, category, and note,
-     * then updates the transaction via {@link HistoryController#editTransaction}.
-     * Refreshes the displayed list after a successful edit.
-     *
-     * @param txId the ID of the transaction to edit
-     */
+
     public void onEdit(int txId) {
-        System.out.println("\nEditing transaction #" + txId);
+        System.out.println("\nEditing transaction " + txId);
 
         List<Category> categories = Category.fetchAll();
-        System.out.println("\n  Available categories:");
+        System.out.println("\nAvailable categories:");
         for (Category c : categories) {
-            System.out.println("    " + c.getCategoryId() + ". "
-                    + c.getIcon() + " " + c.getName());
+            System.out.println("    " + c.getCategoryId() + " " + c.getName());
         }
 
-        System.out.print("\n  New amount (EGP): ");
+        System.out.print("\nNew amount (EGP): ");
         double newAmount;
         try {
             newAmount = Double.parseDouble(scanner.nextLine().trim());
         } catch (NumberFormatException e) {
-            System.out.println("  ✗ Invalid amount.");
+            System.out.println("Invalid amount.");
             return;
         }
 
-        System.out.print("  New category id: ");
+        System.out.print("New category id: ");
         int newCatId;
         try {
             newCatId = Integer.parseInt(scanner.nextLine().trim());
         } catch (NumberFormatException e) {
-            System.out.println("  ✗ Invalid category id.");
+            System.out.println("Invalid category id.");
             return;
         }
 
-        System.out.print("  New note (press Enter to keep current): ");
+        System.out.print("New note (press Enter to keep current): ");
         String newNote = scanner.nextLine().trim();
         if (newNote.isEmpty()) {
-            newNote = "-";
+            newNote = "";
         }
 
         boolean success = historyController.editTransaction(
                 txId, newAmount, newCatId, newNote);
 
         if (success) {
-            System.out.println("  ✓ Transaction #" + txId + " updated.");
+            System.out.println("Transaction " + txId + " updated.");
         } else {
-            System.out.println("  ✗ Transaction #" + txId + " not found.");
+            System.out.println("Transaction " + txId + " not found.");
         }
 
         displayedTransactions = historyController.getAll(activeCycleId);
         displayHistory(displayedTransactions);
     }
-/**
-     * Handles the delete flow for a specific transaction.
-     * Asks for confirmation before deleting via {@link HistoryController#deleteTransaction}.
-     * Refreshes the displayed list after deletion.
-     *
-     * @param txId the ID of the transaction to delete
-     */  
+
     public void onDelete(int txId) {
-        System.out.print("\nDelete transaction #" + txId + "? (Y/N): ");
+        System.out.print("\nDelete transaction " + txId + "? (Y/N): ");
         String confirm = scanner.nextLine().trim().toUpperCase();
 
         if (!"Y".equals(confirm)) {
-            System.out.println("  Cancelled.");
+            System.out.println("Cancelled.");
             return;
         }
 
         historyController.deleteTransaction(txId);
-        System.out.println("  ✓ Transaction #" + txId + " deleted.");
+        System.out.println("Transaction " + txId + " deleted.");
 
         displayedTransactions = historyController.getAll(activeCycleId);
         displayHistory(displayedTransactions);
     }
-/**
-     * Prompts the user to select a category and filters the transaction list accordingly.
-     * Displays all available categories before asking for input.
-     */
+
     private void promptFilterByCategory() {
         List<Category> cats = Category.fetchAll();
         System.out.println("\nAvailable categories:");
         for (Category c : cats) {
-            System.out.println("  " + c.getCategoryId() + ". " + c.getIcon() + " " + c.getName());
+            System.out.println("  " + c.getCategoryId() + " " + c.getName());
         }
+
         System.out.print("Enter category id to filter: ");
         try {
             int catId = Integer.parseInt(scanner.nextLine().trim());
             onFilterByCategory(catId);
         } catch (NumberFormatException e) {
-            System.out.println("  ✗ Invalid category id.");
+            System.out.println("Invalid category id.");
         }
     }
-/**
-     * Prompts the user to enter a date and filters the transaction list to that date.
-     * Expects input in yyyy-MM-dd format.
-     */
+
     private void promptFilterByDate() {
         System.out.print("Enter date (yyyy-MM-dd): ");
         String dateStr = scanner.nextLine().trim();
@@ -243,34 +188,30 @@ public class HistoryScreen {
 
             List<Transaction> filtered = historyController.filterByDate(date);
 
-            System.out.println("\n— Showing transactions on " + dateStr + " —");
+            System.out.println("\n Showing transactions on " + dateStr);
             displayHistory(filtered);
         } catch (Exception e) {
-            System.out.println("  ✗ Invalid date format. Use yyyy-MM-dd.");
+            System.out.println("Invalid date format. Use yyyy-MM-dd.");
         }
     }
- /**
-     * Prompts the user to enter a transaction ID and launches the edit flow.
-     */
+
     private void promptEdit() {
         System.out.print("Enter transaction id to edit: ");
         try {
             int txId = Integer.parseInt(scanner.nextLine().trim());
             onEdit(txId);
         } catch (NumberFormatException e) {
-            System.out.println("  ✗ Invalid transaction id.");
+            System.out.println("Invalid transaction id.");
         }
     }
-/**
-     * Prompts the user to enter a transaction ID and launches the delete flow.
-     */
+
     private void promptDelete() {
         System.out.print("Enter transaction id to delete: ");
         try {
             int txId = Integer.parseInt(scanner.nextLine().trim());
             onDelete(txId);
         } catch (NumberFormatException e) {
-            System.out.println("  ✗ Invalid transaction id.");
+            System.out.println("Invalid transaction id.");
         }
     }
 }

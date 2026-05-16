@@ -44,7 +44,7 @@ private SecurityConfig loadSecurity() {
 
         String[] parts   = line.split(",", 4);
         String hashedPIN = parts[0];
-        boolean locked   = Boolean.parseBoolean(parts[1]);
+        boolean locked   = Boolean.parseBoolean(parts[1]); 
         int attempts     = Integer.parseInt(parts[2]);
         LocalDateTime lockoutEnd = parts[3].equals("null")
                                  ? null

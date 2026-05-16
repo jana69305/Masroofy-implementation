@@ -55,7 +55,7 @@ public class StatsScreen {
      */
     public void show() {
         System.out.println("========================================");
-        System.out.println("        MASROOFY — Spending Stats       ");
+        System.out.println("        MASROOFY  Spending Stats       ");
         System.out.println("========================================");
 
         List<CategoryTotal> data = dashboardController.aggregateTotals(
@@ -102,7 +102,7 @@ public class StatsScreen {
             return;
         }
 
-        System.out.println("\n  ┌─────────── Spending Breakdown ───────────┐");
+        System.out.println("\n  Spending Breakdown ");
 
         for (CategoryTotal ct : data) {
             double pct = (grandTotal > 0) ? (ct.getTotal() / grandTotal) * 100 : 0;
@@ -114,7 +114,7 @@ public class StatsScreen {
                     ct.getCategoryName(), bar, pct);
         }
 
-        System.out.println("  └────────────────────────────────────────────┘");
+       
     }
 
  /**
